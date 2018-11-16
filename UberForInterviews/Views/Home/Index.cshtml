@@ -1,0 +1,65 @@
+﻿@{
+    ViewBag.Title = "Uber for Liam's interview";
+}
+
+<!-- Driver stats panel -->
+<div class="panel" id="stats">
+    <div class="card" style="width: 28rem;">
+        <div class="card-body">
+            <h1 class="card-title">Driver Stats</h1>
+            <table id="statsTable" class="table table-striped">
+                <thead>
+                    <th scope="col">Status</th>
+                    <th scope="col">Amout</th>
+                </thead>
+                <tbody class="statsBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Driver info panel -->
+<div class="panel" id="driverInfo">
+    <div class="card" style="width: 58rem;">
+        <div class="card-body">
+            <h1 class="card-title">Drivers</h1>
+            <table id="driverInfoTable" class="table table-striped">
+                <thead>
+                    <th scope="col">Name</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Latitude</th>
+                    <th scope="col">Longitude</th>
+                </thead>
+                <tbody class="driverInfoBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Google Maps map -->
+<div id="map"></div>
+<script>
+    var map;
+    var markers;
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: 45.3673944, lng: -75.7485551 },
+            zoom: 12
+        });
+
+        //Poll server once every five seconds, could be enhanced
+        var serverRequestTimer = 5000;
+        markers = getDriverLocation();
+        getDriverStats();
+
+        setInterval(function () {
+            //clear markers
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+            }
+            markers = getDriverLocation();
+        }, serverRequestTimer);
+
+        setInterval(getDriverStats, serverRequestTimer);
+    }
+</script>
